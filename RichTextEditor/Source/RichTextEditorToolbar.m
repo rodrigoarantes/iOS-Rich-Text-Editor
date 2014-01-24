@@ -34,12 +34,13 @@
 #import "WEPopoverController.h"
 #import "RichTextEditorToggleButton.h"
 #import "UIFont+RichTextEditor.h"
+#import "ColorPickSelectorViewController.h"
 
 #define ITEM_SEPARATOR_SPACE 5
 #define ITEM_TOP_AND_BOTTOM_BORDER 5
 #define ITEM_WITH 40
 
-@interface RichTextEditorToolbar() <RichTextEditorFontSizePickerViewControllerDelegate, RichTextEditorFontSizePickerViewControllerDataSource, RichTextEditorFontPickerViewControllerDelegate, RichTextEditorFontPickerViewControllerDataSource, RichTextEditorColorPickerViewControllerDataSource, RichTextEditorColorPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface RichTextEditorToolbar() <RichTextEditorFontSizePickerViewControllerDelegate, RichTextEditorFontSizePickerViewControllerDataSource, RichTextEditorFontPickerViewControllerDelegate, RichTextEditorFontPickerViewControllerDataSource, RichTextEditorColorPickerViewControllerDataSource, RichTextEditorColorPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ColorPickSelectorViewControllerDelegate>
 @property (nonatomic, strong) id <RichTextEditorPopover> popover;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnBold;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnItalic;
@@ -47,17 +48,19 @@
 @property (nonatomic, strong) RichTextEditorToggleButton *btnStrikeThrough;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnFontSize;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnFont;
-@property (nonatomic, strong) RichTextEditorToggleButton *btnBackgroundColor;
-@property (nonatomic, strong) RichTextEditorToggleButton *btnForegroundColor;
+@property (nonatomic, strong) UIButton *btnBackgroundColor;
+@property (nonatomic, strong) UIButton *btnForegroundColor;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnTextAlignmentLeft;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnTextAlignmentCenter;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnTextAlignmentRight;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnTextAlignmentJustified;
-@property (nonatomic, strong) RichTextEditorToggleButton *btnParagraphIndent;
-@property (nonatomic, strong) RichTextEditorToggleButton *btnParagraphOutdent;
+@property (nonatomic, strong) UIButton *btnParagraphIndent;
+@property (nonatomic, strong) UIButton *btnParagraphOutdent;
 @property (nonatomic, strong) RichTextEditorToggleButton *btnParagraphFirstLineHeadIndent;
-@property (nonatomic, strong) RichTextEditorToggleButton *btnBulletList;
-@property (nonatomic, strong) RichTextEditorToggleButton *btnTextAttachment;
+@property (nonatomic, strong) UIButton *btnBulletList;
+@property (nonatomic, strong) UIButton *btnTextAttachment;
+@property (nonatomic, strong, readwrite) UIButton *btnUndo;
+@property (nonatomic, strong, readwrite) UIButton *btnRedo;
 @end
 
 @implementation RichTextEditorToolbar
@@ -71,9 +74,11 @@
 		self.delegate = delegate;
 		self.dataSource = dataSource;
 		
-		self.backgroundColor = [UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1];
+        //[UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1];
+		self.backgroundColor = EDZONE_NAVIGATION_BAR_COLOR;
 		self.layer.borderWidth = .7;
 		self.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
 		
 		[self initializeButtons];
         [self populateToolbar];
@@ -135,6 +140,7 @@
 	self.btnStrikeThrough.on = (!existingStrikeThrough || existingStrikeThrough.intValue == NSUnderlineStyleNone) ? NO :YES;
 	
 	[self populateToolbar];
+
 }
 
 #pragma mark - IBActions -
@@ -198,20 +204,63 @@
 
 - (void)textBackgroundColorSelected:(UIButton *)sender
 {
-	RichTextEditorColorPickerViewController *colorPicker = [[RichTextEditorColorPickerViewController alloc] init];
-	colorPicker.action = RichTextEditorColorPickerActionTextBackgroundColor;
-	colorPicker.delegate = self;
-	colorPicker.dataSource = self;
-	[self presentViewController:colorPicker fromView:sender];
+    ColorPickSelectorViewController *colorSelector = [ColorPickSelectorViewController new];
+    colorSelector.view.tag = RichTextEditorColorPickerActionTextBackgroundColor;
+    [colorSelector setDelegate:self];
+    
+    /// setup toolbars
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:colorSelector];
+    
+    [self presentViewController:navigationController fromView:sender];
 }
 
 - (void)textForegroundColorSelected:(UIButton *)sender
 {
-	RichTextEditorColorPickerViewController *colorPicker = [[RichTextEditorColorPickerViewController alloc] init];
-	colorPicker.action = RichTextEditorColorPickerActionTextForegroudColor;
-	colorPicker.delegate = self;
-	colorPicker.dataSource = self;
-	[self presentViewController:colorPicker fromView:sender];
+    ColorPickSelectorViewController *colorSelector = [ColorPickSelectorViewController new];
+    colorSelector.view.tag = RichTextEditorColorPickerActionTextForegroudColor;
+    [colorSelector setDelegate:self];
+    
+    /// setup toolbars
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:colorSelector];
+    
+    [self presentViewController:navigationController fromView:sender];
+}
+
+#pragma mark - COLOR PICKER DELEGATE AND HELPER
+
+- (void)onClearBackgroundColor{
+    [self.delegate richTextEditorToolbarDidSelectTextBackgroundColor:nil];
+    [self dismissViewController];
+}
+
+- (void)onClearForegroundColor{
+    [self.delegate richTextEditorToolbarDidSelectTextForegroundColor:nil];
+    [self dismissViewController];
+}
+
+- (void)didLoadColorPickSelectorViewController:(ColorPickSelectorViewController *)colorPickSelectorViewController{
+    if (colorPickSelectorViewController.view.tag == RichTextEditorColorPickerActionTextBackgroundColor)
+	{
+		colorPickSelectorViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear" style:UIBarButtonItemStyleBordered target:self action:@selector(onClearBackgroundColor)];
+	}
+	else if (colorPickSelectorViewController.view.tag == RichTextEditorColorPickerActionTextForegroudColor)
+	{
+		colorPickSelectorViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear" style:UIBarButtonItemStyleBordered target:self action:@selector(onClearForegroundColor)];
+	}
+}
+
+- (void)colorPickSelectorViewController:(ColorPickSelectorViewController *)colorPickSelectorViewController didSelectColor:(EnumBookShelfColor *)color{
+    
+    if (colorPickSelectorViewController.view.tag == RichTextEditorColorPickerActionTextBackgroundColor)
+	{
+		[self.delegate richTextEditorToolbarDidSelectTextBackgroundColor:color.color];
+	}
+	else
+	{
+		[self.delegate richTextEditorToolbarDidSelectTextForegroundColor:color.color];
+	}
+	
+	[self dismissViewController];
 }
 
 - (void)textAlignmentSelected:(UIButton *)sender
@@ -235,6 +284,16 @@
 	UIImagePickerController *vc = [[UIImagePickerController alloc] init];
 	vc.delegate = self;
 	[self presentViewController:vc fromView:self.btnTextAttachment];
+}
+
+- (void)undoSelected:(UIButton *)sender
+{
+	[self.delegate richTextEditorToolbarDidSelectUndo];
+}
+
+- (void)redoSelected:(UIButton *)sender
+{
+	[self.delegate richTextEditorToolbarDidSelectRedo];
 }
 
 #pragma mark - Private Methods -
@@ -408,18 +467,40 @@
 	}
 	
 	// Separator view after color section
-	if (features & RichTextEditorFeatureBulletList || features & RichTextEditorFeatureAll)
+	if (features & RichTextEditorTextAttachment || features & RichTextEditorFeatureAll)
 	{
 		UIView *separatorView = [self separatorView];
 		[self addView:separatorView afterView:lastAddedView withSpacing:YES];
 		lastAddedView = separatorView;
 	}
 	
-	if ((features & RichTextEditorFeatureBulletList || features & RichTextEditorFeatureAll) && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
+	if ((features & RichTextEditorTextAttachment || features & RichTextEditorFeatureAll) && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0"))
 	{
 		[self addView:self.btnTextAttachment afterView:lastAddedView withSpacing:YES];
 		lastAddedView = self.btnBulletList;
 	}
+    
+    //////// SEPARATOR ADD UNDO AND REDO
+    
+    if (features & RichTextEditorFeatureUndoAndRedo || features & RichTextEditorFeatureAll)
+	{
+		UIView *separatorView = [self separatorView];
+		[self addView:separatorView afterView:lastAddedView withSpacing:YES];
+		lastAddedView = separatorView;
+	}
+	
+	if ((features & RichTextEditorFeatureUndoAndRedo || features & RichTextEditorFeatureAll))
+	{
+		[self addView:self.btnUndo afterView:lastAddedView withSpacing:YES];
+		lastAddedView = self.btnUndo;
+	}
+    
+    if ((features & RichTextEditorFeatureUndoAndRedo || features & RichTextEditorFeatureAll))
+	{
+		[self addView:self.btnRedo afterView:lastAddedView withSpacing:YES];
+		lastAddedView = self.btnRedo;
+	}
+    
 	
 	[self scrollRectToVisible:visibleRect animated:NO];
 }
@@ -468,26 +549,24 @@
 	self.btnTextAlignmentJustified = [self buttonWithImageNamed:@"justifyfull.png"
 													andSelector:@selector(textAlignmentSelected:)];
 	
-	self.btnForegroundColor = [self buttonWithImageNamed:@"forecolor.png"
-											 andSelector:@selector(textForegroundColorSelected:)];
+	self.btnForegroundColor = [self normalButtonWithImageNamed:@"forecolor.png" andSelector:@selector(textForegroundColorSelected:)];
 	
-	self.btnBackgroundColor = [self buttonWithImageNamed:@"backcolor.png"
-											 andSelector:@selector(textBackgroundColorSelected:)];
+	self.btnBackgroundColor = [self normalButtonWithImageNamed:@"backcolor.png" andSelector:@selector(textBackgroundColorSelected:)];
 	
-	self.btnBulletList = [self buttonWithImageNamed:@"bullist.png"
-										 andSelector:@selector(bulletListSelected:)];
+	self.btnBulletList = [self normalButtonWithImageNamed:@"bullist.png" andSelector:@selector(bulletListSelected:)];
 	
-	self.btnParagraphIndent = [self buttonWithImageNamed:@"indent.png"
-											 andSelector:@selector(paragraphIndentSelected:)];
+	self.btnParagraphIndent = [self normalButtonWithImageNamed:@"indent.png" andSelector:@selector(paragraphIndentSelected:)];
 	
-	self.btnParagraphOutdent = [self buttonWithImageNamed:@"outdent.png"
-											  andSelector:@selector(paragraphOutdentSelected:)];
+	self.btnParagraphOutdent = [self normalButtonWithImageNamed:@"outdent.png" andSelector:@selector(paragraphOutdentSelected:)];
 	
 	self.btnParagraphFirstLineHeadIndent = [self buttonWithImageNamed:@"firstLineIndent.png"
 														  andSelector:@selector(paragraphHeadIndentOutdentSelected:)];
 	
-	self.btnTextAttachment = [self buttonWithImageNamed:@"image.png"
-														  andSelector:@selector(textAttachmentSelected:)];
+	self.btnTextAttachment = [self normalButtonWithImageNamed:@"image.png" andSelector:@selector(textAttachmentSelected:)];
+    
+    self.btnUndo = [self normalButtonWithImageNamed:@"undo.png" andSelector:@selector(undoSelected:)];
+    
+    self.btnRedo = [self normalButtonWithImageNamed:@"redo.png" andSelector:@selector(redoSelected:)];
 }
 
 - (RichTextEditorToggleButton *)buttonWithImageNamed:(NSString *)image width:(NSInteger)width andSelector:(SEL)selector
@@ -495,10 +574,25 @@
 	RichTextEditorToggleButton *button = [[RichTextEditorToggleButton alloc] init];
 	[button addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
 	[button setFrame:CGRectMake(0, 0, width, 0)];
-	[button.titleLabel setFont:[UIFont boldSystemFontOfSize:10]];
-	[button.titleLabel setTextColor:[UIColor blackColor]];
-	[button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	[button setImage:[UIImage imageNamed:image] forState:UIControlStateNormal];
+	[button.titleLabel setFont:[UIFont systemFontOfSize:12]];
+	[button.titleLabel setTextColor:[UIColor whiteColor]];
+	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[button setImage:[[UIImage imageNamed:image] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+    [button setTintColor:[UIColor whiteColor]];
+	
+	return button;
+}
+
+- (UIButton *)normalButtonWithImageNamed:(NSString *)image width:(NSInteger)width andSelector:(SEL)selector
+{
+	UIButton *button = [[UIButton alloc] init];
+	[button addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
+	[button setFrame:CGRectMake(0, 0, width, 0)];
+	[button.titleLabel setFont:[UIFont systemFontOfSize:12]];
+	[button.titleLabel setTextColor:[UIColor whiteColor]];
+	[button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+	[button setImage:[[UIImage imageNamed:image] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+    [button setTintColor:[UIColor whiteColor]];
 	
 	return button;
 }
@@ -506,6 +600,11 @@
 - (RichTextEditorToggleButton *)buttonWithImageNamed:(NSString *)image andSelector:(SEL)selector
 {
 	return [self buttonWithImageNamed:image width:ITEM_WITH andSelector:selector];
+}
+
+- (UIButton *)normalButtonWithImageNamed:(NSString *)image andSelector:(SEL)selector
+{
+	return [self normalButtonWithImageNamed:image width:ITEM_WITH andSelector:selector];
 }
 
 - (UIView *)separatorView

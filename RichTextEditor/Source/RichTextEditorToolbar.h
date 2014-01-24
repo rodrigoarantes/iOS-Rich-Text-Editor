@@ -57,7 +57,8 @@ typedef enum{
 	RichTextEditorFeatureParagraphFirstLineIndentation	= 1 << 13,
 	RichTextEditorFeatureBulletList						= 1 << 14,
 	RichTextEditorTextAttachment						= 1 << 15,
-	RichTextEditorFeatureAll							= 1 << 16
+    RichTextEditorFeatureUndoAndRedo					= 1 << 16,
+	RichTextEditorFeatureAll							= 1 << 17
 }RichTextEditorFeature;
 
 @protocol RichTextEditorToolbarDelegate <UIScrollViewDelegate>
@@ -74,6 +75,8 @@ typedef enum{
 - (void)richTextEditorToolbarDidSelectTextBackgroundColor:(UIColor *)color;
 - (void)richTextEditorToolbarDidSelectTextForegroundColor:(UIColor *)color;
 - (void)richTextEditorToolbarDidSelectTextAlignment:(NSTextAlignment)textAlignment;
+- (void)richTextEditorToolbarDidSelectUndo;
+- (void)richTextEditorToolbarDidSelectRedo;
 @end
 
 @protocol RichTextEditorToolbarDataSource <NSObject>
@@ -94,5 +97,9 @@ typedef enum{
 - (id)initWithFrame:(CGRect)frame delegate:(id <RichTextEditorToolbarDelegate>)delegate dataSource:(id <RichTextEditorToolbarDataSource>)dataSource;
 - (void)updateStateWithAttributes:(NSDictionary *)attributes;
 - (void)redraw;
+
+// public buttons
+@property (nonatomic, strong, readonly) UIButton *btnUndo;
+@property (nonatomic, strong, readonly) UIButton *btnRedo;
 
 @end

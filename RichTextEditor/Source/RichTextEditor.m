@@ -34,7 +34,7 @@
 #define RICHTEXTEDITOR_TOOLBAR_HEIGHT 40
 #define BULLET_STRING @"\t•\t"
 
-@interface RichTextEditor() <RichTextEditorToolbarDelegate, RichTextEditorToolbarDataSource>
+@interface RichTextEditor() <RichTextEditorToolbarDelegate, RichTextEditorToolbarDataSource, UITextViewDelegate>
 @property (nonatomic, strong) RichTextEditorToolbar *toolBar;
 
 // Gets set to YES when the user starts chaning attributes when there is no text selection (selecting bold, italic, etc)
@@ -78,6 +78,8 @@
 
 - (void)commonInitialization
 {
+    [self setDelegate:self];
+    
     self.borderColor = [UIColor lightGrayColor];
     self.borderWidth = 1.0;
 
@@ -467,6 +469,29 @@
 	[attributedString insertAttributedString:attributedStringAttachment atIndex:self.selectedRange.location];
 	[attributedString addAttributes:previousAttributes range:NSMakeRange(self.selectedRange.location, 1)];
 	self.attributedText = attributedString;
+}
+
+/// UNDO AND REDO
+
+- (void)richTextEditorToolbarDidSelectUndo{
+    [self.undoManager undo];
+    [self updateUndoAndRedoState];
+}
+
+- (void)richTextEditorToolbarDidSelectRedo{
+    [self.undoManager redo];
+    [self updateUndoAndRedoState];
+}
+
+#pragma mark - TEXT VIEW DELEGATE
+
+- (void)textViewDidChange:(UITextView *)textView{
+    [self updateUndoAndRedoState];
+}
+
+- (void)updateUndoAndRedoState{
+    self.toolBar.btnRedo.enabled = [self.undoManager canRedo];
+    self.toolBar.btnUndo.enabled = [self.undoManager canUndo];
 }
 
 #pragma mark - Private Methods -
