@@ -845,4 +845,18 @@
     
 }
 
+#pragma mark - RICH TEXT DELEGATE
+
+- (void)textViewDidBeginEditing:(UITextView *)textView{
+    if([self.richTextDelegate respondsToSelector:@selector(textViewDidBeginEditing:)]){
+        [self.richTextDelegate textViewDidBeginEditing:textView];
+    }
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView{
+    if([self.richTextDelegate respondsToSelector:@selector(textViewDidEndEditing:)]){
+        [self.richTextDelegate textViewDidEndEditing:textView];
+    }
+}
+
 @end

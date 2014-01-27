@@ -41,7 +41,17 @@
 - (BOOL)shouldDisplayRichTextOptionsInMenuControllerForRichTextEditor:(RichTextEditor *)richTextEdiotor;
 @end
 
+@protocol RichTextViewDelegate <NSObject>
+
+- (void)textViewDidBeginEditing:(UITextView *)textView;
+
+- (void)textViewDidEndEditing:(UITextView *)textView;
+
+@end
+
 @interface RichTextEditor : UITextView
+
+@property (nonatomic, weak) id <RichTextViewDelegate> richTextDelegate;
 
 @property (nonatomic, weak) IBOutlet id <RichTextEditorDataSource> dataSource;
 @property (nonatomic, assign) CGFloat defaultIndentationSize;
