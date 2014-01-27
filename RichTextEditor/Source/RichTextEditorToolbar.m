@@ -228,16 +228,34 @@
 
 #pragma mark - COLOR PICKER DELEGATE AND HELPER
 
+/**
+ *  It cleans the background style
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)onClearBackgroundColor{
     [self.delegate richTextEditorToolbarDidSelectTextBackgroundColor:nil];
     [self dismissViewController];
 }
 
+/**
+ *  It cleans the foreground style
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)onClearForegroundColor{
     [self.delegate richTextEditorToolbarDidSelectTextForegroundColor:nil];
     [self dismissViewController];
 }
 
+/**
+ *  Prepare the clear button
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)didLoadColorPickSelectorViewController:(ColorPickSelectorViewController *)colorPickSelectorViewController{
     if (colorPickSelectorViewController.view.tag == RichTextEditorColorPickerActionTextBackgroundColor)
 	{
@@ -249,6 +267,12 @@
 	}
 }
 
+/**
+ *  Set the color value for this new ColorPicker controller
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)colorPickSelectorViewController:(ColorPickSelectorViewController *)colorPickSelectorViewController didSelectColor:(EnumBookShelfColor *)color{
     
     if (colorPickSelectorViewController.view.tag == RichTextEditorColorPickerActionTextBackgroundColor)
@@ -286,6 +310,12 @@
 	[self presentViewController:vc fromView:self.btnTextAttachment];
 }
 
+/**
+ *  Send undo and redo actions the text view
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)undoSelected:(UIButton *)sender
 {
 	[self.delegate richTextEditorToolbarDidSelectUndo];
@@ -583,6 +613,14 @@
 	return button;
 }
 
+/**
+ *  Create a normal UIbutton
+ *
+ *  @return UIButton
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (UIButton *)normalButtonWithImageNamed:(NSString *)image width:(NSInteger)width andSelector:(SEL)selector
 {
 	UIButton *button = [[UIButton alloc] init];

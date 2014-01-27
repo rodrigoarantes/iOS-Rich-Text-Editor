@@ -472,6 +472,12 @@
 
 /// UNDO AND REDO
 
+/**
+ *  Undo and redo Actions
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)richTextEditorToolbarDidSelectUndo{
     [self.undoManager undo];
     [self updateUndoAndRedoState];
@@ -484,6 +490,12 @@
 
 #pragma mark - TEXT VIEW DELEGATE
 
+/**
+ *  Update undo and redo state
+ *
+ *  @since 25/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)textViewDidChange:(UITextView *)textView{
     [self updateUndoAndRedoState];
 }
@@ -828,6 +840,12 @@
 
 #pragma mark - Add HyperLink
 
+/**
+ *  Add a hyperlink
+ *
+ *  @since 27/01/14
+ *  @author Rodrigo Arantes
+ */
 - (void)addHyperLinkForStringUrl:(NSString *)stringUrl{
     
     NSRange range = self.selectedRange;
@@ -846,6 +864,14 @@
 }
 
 #pragma mark - RICH TEXT DELEGATE
+
+/**
+ *  The rich text editor is using the UITextView delegate
+ *  This delegate redirects to the the delegate richTextDelegate
+ *
+ *  @since 27/01/14
+ *  @author Rodrigo Arantes
+ */
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
     if([self.richTextDelegate respondsToSelector:@selector(textViewDidBeginEditing:)]){
