@@ -210,9 +210,8 @@
 	NSError *error ;
 	NSData *data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
 	NSAttributedString *str = [[NSAttributedString alloc] initWithData:data
-							   
-															   options:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-																		 NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]}
+                                                        options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType,
+                                                             NSCharacterEncodingDocumentAttribute : [NSNumber numberWithInt:NSUTF8StringEncoding]}
 													documentAttributes:nil error:&error];
 	
 	if (error)
@@ -825,6 +824,25 @@
 - (UIViewController *)firsAvailableViewControllerForRichTextEditorToolbar
 {
 	return [self firstAvailableViewController];
+}
+
+#pragma mark - Add HyperLink
+
+- (void)addHyperLinkForStringUrl:(NSString *)stringUrl{
+    
+    NSRange range = self.selectedRange;
+    
+    NSMutableAttributedString *mutableAttributedString = [self.attributedText mutableCopy];
+    NSDictionary *attributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSForegroundColorAttributeName : [UIColor blueColor]};
+    [mutableAttributedString insertAttributedString:[[NSAttributedString alloc] initWithString:stringUrl attributes:attributes] atIndex:range.location];
+    self.attributedText = mutableAttributedString;
+    
+    // add non attribute
+    mutableAttributedString = [self.attributedText mutableCopy];
+    attributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleNone), NSForegroundColorAttributeName : [UIColor blackColor]};
+    [mutableAttributedString insertAttributedString:[[NSAttributedString alloc] initWithString:@" " attributes:attributes] atIndex:range.location + stringUrl.length];
+    self.attributedText = mutableAttributedString;
+    
 }
 
 @end

@@ -51,4 +51,8 @@
 - (NSString *)htmlString;
 - (void)setHtmlString:(NSString *)htmlString;
 
+#pragma mark - Add HyperLink
+
+- (void)addHyperLinkForStringUrl:(NSString *)stringUrl;
+
 @end
