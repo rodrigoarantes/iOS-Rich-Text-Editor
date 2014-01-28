@@ -228,12 +228,12 @@
 		return nil;
 	}
 	
-	NSData *data = [self.attributedText dataFromRange:NSMakeRange(0, self.text.length) documentAttributes:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-																							 NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]}
-								 error:nil];
-	
-	return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-	//return [self.attributedText htmlString];
+//	NSData *data = [self.attributedText dataFromRange:NSMakeRange(0, self.text.length) documentAttributes:@{NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+//																							 NSCharacterEncodingDocumentAttribute: [NSNumber numberWithInt:NSUTF8StringEncoding]}
+//								 error:nil];
+//	
+//	return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+	return [self.attributedText htmlString];
 }
 
 - (void)setBorderColor:(UIColor *)borderColor
