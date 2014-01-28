@@ -61,6 +61,8 @@
 - (NSString *)htmlString;
 - (void)setHtmlString:(NSString *)htmlString;
 
+- (void)setDefaultGoogleDriveFonts;
+
 #pragma mark - Add HyperLink
 
 - (void)addHyperLinkForStringUrl:(NSString *)stringUrl;

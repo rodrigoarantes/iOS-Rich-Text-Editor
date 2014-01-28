@@ -40,6 +40,9 @@
 // Gets set to YES when the user starts chaning attributes when there is no text selection (selecting bold, italic, etc)
 // Gets set to NO  when the user changes selection or starts typing
 @property (nonatomic, assign) BOOL typingAttributesInProgress;
+
+@property (nonatomic, strong) NSArray *googleDriveFonts;
+
 @end
 
 @implementation RichTextEditor
@@ -771,10 +774,16 @@
 
 - (NSArray *)fontFamilySelectionForRichTextEditorToolbar
 {
-	if (self.dataSource && [self.dataSource respondsToSelector:@selector(fontFamilySelectionForRichTextEditor:)])
-	{
-		return [self.dataSource fontFamilySelectionForRichTextEditor:self];
-	}
+	
+    
+    if(!self.googleDriveFonts){
+        if (self.dataSource && [self.dataSource respondsToSelector:@selector(fontFamilySelectionForRichTextEditor:)])
+        {
+            return [self.dataSource fontFamilySelectionForRichTextEditor:self];
+        }
+    } else {
+        return self.googleDriveFonts;
+    }
 	
 	return nil;
 }
@@ -883,6 +892,15 @@
     if([self.richTextDelegate respondsToSelector:@selector(textViewDidEndEditing:)]){
         [self.richTextDelegate textViewDidEndEditing:textView];
     }
+}
+
+#pragma mark - DEFAULT GOOGLE DRIVE FONTS
+
+- (void)setDefaultGoogleDriveFonts{
+    NSArray *fonts = @[@"Helvetica", @"Arial", @"Georgia", @"Courier New", @"Verdana", @"Times New Roman", @"Trebuchet MS", @"Helvetica Neue", @"Impact", @"Comic Sans MS"];
+    _googleDriveFonts = [fonts sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
+        return [obj1 compare:obj2];
+    }];
 }
 
 @end
