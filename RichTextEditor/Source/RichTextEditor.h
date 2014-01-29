@@ -43,9 +43,14 @@
 
 @protocol RichTextViewDelegate <NSObject>
 
-- (void)textViewDidBeginEditing:(UITextView *)textView;
+- (void)textViewDidBeginEditing:(RichTextEditor *)textView;
 
-- (void)textViewDidEndEditing:(UITextView *)textView;
+- (void)textViewDidEndEditing:(RichTextEditor *)textView;
+
+- (void)textViewDidChange:(RichTextEditor *)textView;
+
+- (BOOL)textView:(RichTextEditor *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
+
 
 @end
 

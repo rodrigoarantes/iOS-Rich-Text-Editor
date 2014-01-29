@@ -501,6 +501,10 @@
  */
 - (void)textViewDidChange:(UITextView *)textView{
     [self updateUndoAndRedoState];
+    
+    if([self.richTextDelegate respondsToSelector:@selector(textViewDidChange:)]){
+        [self.richTextDelegate textViewDidChange:(RichTextEditor *)textView];
+    }
 }
 
 - (void)updateUndoAndRedoState{
@@ -884,14 +888,22 @@
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
     if([self.richTextDelegate respondsToSelector:@selector(textViewDidBeginEditing:)]){
-        [self.richTextDelegate textViewDidBeginEditing:textView];
+        [self.richTextDelegate textViewDidBeginEditing:(RichTextEditor *)textView];
     }
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView{
     if([self.richTextDelegate respondsToSelector:@selector(textViewDidEndEditing:)]){
-        [self.richTextDelegate textViewDidEndEditing:textView];
+        [self.richTextDelegate textViewDidEndEditing:(RichTextEditor *)textView];
     }
+}
+
+- (BOOL)textView:(RichTextEditor *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text{
+    if([self.richTextDelegate respondsToSelector:@selector(textView:shouldChangeTextInRange:replacementText:)]){
+        return [self.richTextDelegate textView:(RichTextEditor *)textView shouldChangeTextInRange:range replacementText:text];
+    }
+    
+    return YES;
 }
 
 #pragma mark - DEFAULT GOOGLE DRIVE FONTS
