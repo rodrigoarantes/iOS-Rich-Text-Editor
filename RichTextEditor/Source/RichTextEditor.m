@@ -612,6 +612,10 @@
 
 - (void)applyAttributes:(id)attribute forKey:(NSString *)key atRange:(NSRange)range
 {
+    if([self.richTextDelegate respondsToSelector:@selector(textViewDidApplyNewAttributes:)]){
+        [self.richTextDelegate textViewDidApplyNewAttributes:self];
+    }
+    
 	// If any text selected apply attributes to text
 	if (range.length > 0)
 	{
@@ -666,7 +670,11 @@
 
 - (void)applyFontAttributesWithBoldTrait:(NSNumber *)isBold italicTrait:(NSNumber *)isItalic fontName:(NSString *)fontName fontSize:(NSNumber *)fontSize toTextAtRange:(NSRange)range
 {
-	// If any text selected apply attributes to text
+    if([self.richTextDelegate respondsToSelector:@selector(textViewDidApplyNewAttributes:)]){
+        [self.richTextDelegate textViewDidApplyNewAttributes:self];
+    }
+    
+	// If any text selected apply attributes to tex
 	if (range.length > 0)
 	{
 		NSMutableAttributedString *attributedString = [self.attributedText mutableCopy];

@@ -43,6 +43,11 @@
 
 @protocol RichTextViewDelegate <NSObject>
 
+
+@optional
+
+- (void)textViewDidApplyNewAttributes:(RichTextEditor *)textView;
+
 - (void)textViewDidBeginEditing:(RichTextEditor *)textView;
 
 - (void)textViewDidEndEditing:(RichTextEditor *)textView;
