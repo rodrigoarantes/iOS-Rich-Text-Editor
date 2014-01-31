@@ -917,7 +917,7 @@
 #pragma mark - DEFAULT GOOGLE DRIVE FONTS
 
 - (void)setDefaultGoogleDriveFonts{
-    NSArray *fonts = @[@"Helvetica", @"Arial", @"Georgia", @"Courier New", @"Verdana", @"Times New Roman", @"Trebuchet MS", @"Helvetica Neue", @"Impact", @"Comic Sans MS"];
+    NSArray *fonts = @[@"Helvetica", @"Arial", @"Georgia", @"Courier New", @"Verdana", @"Times New Roman", @"Trebuchet MS", @"Helvetica Neue", @"Comic Sans MS"];
     _googleDriveFonts = [fonts sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
         return [obj1 compare:obj2];
     }];
