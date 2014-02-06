@@ -760,8 +760,15 @@
 	NSRange rangeOfCurrentParagraph = [self.attributedText firstParagraphRangeFromTextRange:self.selectedRange];
 	if (rangeOfCurrentParagraph.length != 0)
 		return;
+    
+    NSRange range;
+    if (rangeOfCurrentParagraph.location == 0) {
+        range = NSMakeRange(0, 0);
+    } else {
+        range = NSMakeRange(rangeOfCurrentParagraph.location-1, 0);
+    }
 	
-	NSRange rangeOfPreviousParagraph = [self.attributedText firstParagraphRangeFromTextRange:NSMakeRange(rangeOfCurrentParagraph.location-1, 0)];
+	NSRange rangeOfPreviousParagraph = [self.attributedText firstParagraphRangeFromTextRange:range];
 	if ([[self.attributedText.string substringFromIndex:rangeOfPreviousParagraph.location] hasPrefix:BULLET_STRING])
 		[self richTextEditorToolbarDidSelectBulletList];
 }
