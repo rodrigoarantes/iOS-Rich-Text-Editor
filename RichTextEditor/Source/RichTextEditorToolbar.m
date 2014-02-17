@@ -561,7 +561,7 @@
 	self.btnUnderline = [self buttonWithImageNamed:@"underline.png"
 									   andSelector:@selector(underLineSelected:)];
 	
-	self.btnStrikeThrough = [self buttonWithImageNamed:@"strikethrough"
+	self.btnStrikeThrough = [self buttonWithImageNamed:@"strikethrough.png"
 										   andSelector:@selector(strikeThroughSelected:)];
 	
 	

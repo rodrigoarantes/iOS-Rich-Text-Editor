@@ -98,7 +98,7 @@
 		self.colorsImageView.frame = CGRectMake(2, 46, self.view.frame.size.width-4, self.view.frame.size.height - 46 - 2);
 	}
 	
-	self.contentSizeForViewInPopover = CGSizeMake(300, 240);
+	self.preferredContentSize = CGSizeMake(300, 240);
 }
 
 #pragma mark - Private Methods -

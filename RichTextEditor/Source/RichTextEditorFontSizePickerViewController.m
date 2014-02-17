@@ -66,7 +66,7 @@
 	
 	[self.view addSubview:self.tableview];
 	
-	self.contentSizeForViewInPopover = CGSizeMake(100, 400);
+	self.preferredContentSize = CGSizeMake(100, 400);
 }
 
 #pragma mark - IBActions -
