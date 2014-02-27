@@ -34,7 +34,7 @@
 #import "WEPopoverController.h"
 #import "RichTextEditorToggleButton.h"
 #import "UIFont+RichTextEditor.h"
-#import "ColorPickSelectorViewController.h"
+#import "ColorPickerViewController.h"
 
 #define ITEM_SEPARATOR_SPACE 5
 #define ITEM_TOP_AND_BOTTOM_BORDER 5
@@ -204,7 +204,7 @@
 
 - (void)textBackgroundColorSelected:(UIButton *)sender
 {
-    ColorPickSelectorViewController *colorSelector = [ColorPickSelectorViewController new];
+    ColorPickerViewController *colorSelector = [ColorPickerViewController new];
     colorSelector.view.tag = RichTextEditorColorPickerActionTextBackgroundColor;
     [colorSelector setDelegate:self];
     
@@ -216,7 +216,7 @@
 
 - (void)textForegroundColorSelected:(UIButton *)sender
 {
-    ColorPickSelectorViewController *colorSelector = [ColorPickSelectorViewController new];
+    ColorPickerViewController *colorSelector = [ColorPickerViewController new];
     colorSelector.view.tag = RichTextEditorColorPickerActionTextForegroudColor;
     [colorSelector setDelegate:self];
     
@@ -256,7 +256,7 @@
  *  @since 25/01/14
  *  @author Rodrigo Arantes
  */
-- (void)didLoadColorPickSelectorViewController:(ColorPickSelectorViewController *)colorPickSelectorViewController{
+- (void)didLoadColorPickSelectorViewController:(ColorPickerViewController *)colorPickSelectorViewController{
     if (colorPickSelectorViewController.view.tag == RichTextEditorColorPickerActionTextBackgroundColor)
 	{
 		colorPickSelectorViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear" style:UIBarButtonItemStyleBordered target:self action:@selector(onClearBackgroundColor)];
@@ -273,7 +273,7 @@
  *  @since 25/01/14
  *  @author Rodrigo Arantes
  */
-- (void)colorPickSelectorViewController:(ColorPickSelectorViewController *)colorPickSelectorViewController didSelectColor:(EnumBookShelfColor *)color{
+- (void)colorPickSelectorViewController:(ColorPickerViewController *)colorPickSelectorViewController didSelectColor:(EnumColor *)color{
     
     if (colorPickSelectorViewController.view.tag == RichTextEditorColorPickerActionTextBackgroundColor)
 	{
