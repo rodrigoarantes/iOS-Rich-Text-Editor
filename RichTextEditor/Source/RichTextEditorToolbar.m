@@ -34,7 +34,7 @@
 #import "WEPopoverController.h"
 #import "RichTextEditorToggleButton.h"
 #import "UIFont+RichTextEditor.h"
-#import "ColorPickerViewController.h"
+//#import "ColorPickerViewController.h"
 
 #define ITEM_SEPARATOR_SPACE 5
 #define ITEM_TOP_AND_BOTTOM_BORDER 5
