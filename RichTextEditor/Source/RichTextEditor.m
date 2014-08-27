@@ -921,6 +921,13 @@
     return YES;
 }
 
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange {
+    if([self.richTextDelegate respondsToSelector:@selector(textView:shouldInteractWithURL:inRange:)]){
+        return [self.richTextDelegate textView:(RichTextEditor *)textView shouldInteractWithURL:URL inRange:characterRange];
+    }
+    return YES;
+}
+
 #pragma mark - DEFAULT GOOGLE DRIVE FONTS
 
 - (void)setDefaultGoogleDriveFonts{

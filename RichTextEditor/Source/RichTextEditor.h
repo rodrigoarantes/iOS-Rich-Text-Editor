@@ -56,6 +56,7 @@
 
 - (BOOL)textView:(RichTextEditor *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
 
+- (BOOL)textView:(RichTextEditor *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange;
 
 @end
 
