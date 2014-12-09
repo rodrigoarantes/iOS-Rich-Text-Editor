@@ -41,14 +41,14 @@
 	[btnDone addTarget:self action:@selector(doneSelected:) forControlEvents:UIControlEventTouchUpInside];
 	[btnDone.titleLabel setFont:[UIFont boldSystemFontOfSize:12]];
 	[btnDone setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	[btnDone setTitle:@"Select" forState:UIControlStateNormal];
+	[btnDone setTitle:I18N(@"Select") forState:UIControlStateNormal];
 	[self.view addSubview:btnDone];
 
 	UIButton *btnClear = [[UIButton alloc] initWithFrame:CGRectMake(65, 5, 60, 30)];
 	[btnClear addTarget:self action:@selector(clearSelected:) forControlEvents:UIControlEventTouchUpInside];
 	[btnClear.titleLabel setFont:[UIFont boldSystemFontOfSize:12]];
 	[btnClear setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-	[btnClear setTitle:@"Clear" forState:UIControlStateNormal];
+	[btnClear setTitle:I18N(@"Clear") forState:UIControlStateNormal];
 	[self.view addSubview:btnClear];
 	
 	self.selectedColorView = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width - 35 - 5, 5, 35, 30)];
@@ -75,17 +75,17 @@
 																						   target:nil
 																						   action:nil];
 		
-		UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithTitle:@"Select"
+		UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithTitle:I18N(@"Select")
 																	  style:UIBarButtonItemStyleDone
 																	 target:self
 																	 action:@selector(doneSelected:)];
 		
-		UIBarButtonItem *closeItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+		UIBarButtonItem *closeItem = [[UIBarButtonItem alloc] initWithTitle:I18N(@"Close")
 																	  style:UIBarButtonItemStyleDone
 																	 target:self
 																	 action:@selector(closeSelected:)];
 		
-		UIBarButtonItem *clearItem = [[UIBarButtonItem alloc] initWithTitle:@"Clear"
+		UIBarButtonItem *clearItem = [[UIBarButtonItem alloc] initWithTitle:I18N(@"Clear")
 																	  style:UIBarButtonItemStyleDone
 																	 target:self
 																	 action:@selector(clearSelected:)];
