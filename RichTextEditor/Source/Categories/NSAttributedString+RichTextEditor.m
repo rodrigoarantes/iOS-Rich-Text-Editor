@@ -136,6 +136,7 @@
                                       BOOL hasUnderline = (!underline || underline.intValue == NSUnderlineStyleNone) ? NO :YES;
                                       NSNumber *strikeThrough = [dictionary objectForKey:NSStrikethroughStyleAttributeName];
                                       BOOL hasStrikeThrough = (!strikeThrough || strikeThrough.intValue == NSUnderlineStyleNone) ? NO :YES;
+                                      NSURL *link = [dictionary objectForKey:NSLinkAttributeName];                                     
                                       
                                       [fontString appendFormat:@"<font "];
                                       [fontString appendFormat:@"face=\"%@\" ", font.familyName];
@@ -155,7 +156,24 @@
                                       // End Style
                                       
                                       [fontString appendString:@">"];
-                                      [fontString appendString:[[self.string substringFromIndex:range.location] substringToIndex:range.length]];
+                                      
+                                      //insert link to URL
+                                      if (link != nil) {
+                                          [fontString appendString:@"<a href=\""];
+                                          [fontString appendString:[link absoluteString]];
+                                          
+                                          if ([[link absoluteString] rangeOfString:@"mailto:"].location != NSNotFound) {
+                                              [fontString appendString:@"\">"];
+                                          }else{
+                                              [fontString appendString:@"\" target=\"_blank\">"];
+                                          }
+                                          
+                                          [fontString appendString:[[self.string substringFromIndex:range.location] substringToIndex:range.length]];
+                                          [fontString appendString:@"</a>"];
+                                      }else{
+                                          [fontString appendString:[[self.string substringFromIndex:range.location] substringToIndex:range.length]];
+                                      }
+                                      
                                       [fontString appendString:@"</font>"];
                                       
                                       if ([font isBold])

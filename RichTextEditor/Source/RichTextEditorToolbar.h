@@ -58,7 +58,8 @@ typedef enum{
 	RichTextEditorFeatureBulletList						= 1 << 14,
 	RichTextEditorTextAttachment						= 1 << 15,
     RichTextEditorFeatureUndoAndRedo					= 1 << 16,
-	RichTextEditorFeatureAll							= 1 << 17
+	RichTextEditorFeatureAll							= 1 << 17,
+    RichTextEditorFeatureHyperlink                      = 1 << 18,
 }RichTextEditorFeature;
 
 @protocol RichTextEditorToolbarDelegate <UIScrollViewDelegate>
@@ -77,6 +78,7 @@ typedef enum{
 - (void)richTextEditorToolbarDidSelectTextAlignment:(NSTextAlignment)textAlignment;
 - (void)richTextEditorToolbarDidSelectUndo;
 - (void)richTextEditorToolbarDidSelectRedo;
+- (void)richTextEditorToolbarDidSelectHyperlink;
 @end
 
 @protocol RichTextEditorToolbarDataSource <NSObject>

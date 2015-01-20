@@ -58,6 +58,8 @@
 
 - (BOOL)textView:(RichTextEditor *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange;
 
+- (void)didTouchHyperlinkButton:(RichTextEditor *)richTextEditor;
+
 @end
 
 @interface RichTextEditor : UITextView
