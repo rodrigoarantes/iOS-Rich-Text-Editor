@@ -63,15 +63,20 @@
 @interface RichTextEditor : UITextView
 
 @property (nonatomic, weak) id <RichTextViewDelegate> richTextDelegate;
-
 @property (nonatomic, weak) IBOutlet id <RichTextEditorDataSource> dataSource;
 @property (nonatomic, assign) CGFloat defaultIndentationSize;
+
+// Place Holder
+@property (strong, nonatomic) NSString *placeHolderString;
+@property (strong, nonatomic) UIColor *placeHolderTextColor;
+- (void)setupPlaceHolder;
+- (void)updateLabelPlaceHolderState;
 
 - (void)setBorderColor:(UIColor*)borderColor;
 - (void)setBorderWidth:(CGFloat)borderWidth;
 - (NSString *)htmlString;
 - (void)setHtmlString:(NSString *)htmlString;
-
+- (void)setFontName:(NSString *)fontName andfontSize:(CGFloat)fontSize;
 - (void)setDefaultGoogleDriveFonts;
 
 #pragma mark - Add HyperLink
