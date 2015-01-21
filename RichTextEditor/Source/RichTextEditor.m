@@ -33,6 +33,7 @@
 
 #define RICHTEXTEDITOR_TOOLBAR_HEIGHT 40
 #define BULLET_STRING @"\t•\t"
+#define DEFAULT_PLACEHOLDER_COLOR [UIColor colorWithRed:170/255.f green:170/255.f blue:170/255.f alpha:1]
 
 @interface RichTextEditor() <RichTextEditorToolbarDelegate, RichTextEditorToolbarDataSource, UITextViewDelegate>
 @property (nonatomic, strong) RichTextEditorToolbar *toolBar;
@@ -42,6 +43,7 @@
 @property (nonatomic, assign) BOOL typingAttributesInProgress;
 
 @property (nonatomic, strong) NSArray *googleDriveFonts;
+@property (strong, nonatomic) UILabel *lblPlaceHolder;
 
 @end
 
@@ -118,20 +120,26 @@
 
 - (BOOL)canBecomeFirstResponder
 {
-	if (![self.dataSource respondsToSelector:@selector(shouldDisplayToolbarForRichTextEditor:)] ||
-		[self.dataSource shouldDisplayToolbarForRichTextEditor:self])
-	{
-		self.inputAccessoryView = self.toolBar;
-		
-		// Redraw in case enabbled features have changes
-		[self.toolBar redraw];
-	}
-	else
-	{
-		self.inputAccessoryView = nil;
-	}
-	
-	return [super canBecomeFirstResponder];
+	RichTextEditorFeature features = [self featuresEnabledForRichTextEditorToolbar];
+    
+    if (features == RichTextEditorFeatureNone) {
+        return YES;
+    } else {
+        if (![self.dataSource respondsToSelector:@selector(shouldDisplayToolbarForRichTextEditor:)] ||
+            [self.dataSource shouldDisplayToolbarForRichTextEditor:self])
+        {
+            self.inputAccessoryView = self.toolBar;
+            
+            // Redraw in case enabbled features have changes
+            [self.toolBar redraw];
+        }
+        else
+        {
+            self.inputAccessoryView = nil;
+        }
+        
+        return [super canBecomeFirstResponder];
+    }
 }
 
 - (BOOL)canPerformAction:(SEL)action withSender:(id)sender
@@ -157,6 +165,14 @@
 	if (action == @selector(selectParagraph:) && self.selectedRange.length > 0)
 		return YES;
 	
+    if (features == RichTextEditorFeatureNone) {
+        if (action == @selector(copy:) || action == @selector(_define:)) {
+            return YES;
+        } else {
+            return NO;
+        }
+    }
+    
 	return [super canPerformAction:action withSender:sender];
 }
 
@@ -170,6 +186,7 @@
 {
 	[super setText:text];
 	[self updateToolbarState];
+    [self updateLabelPlaceHolderState];
 }
 
 - (void)setFont:(UIFont *)font
@@ -932,6 +949,28 @@
     return YES;
 }
 
+- (void)setFontName:(NSString *)fontName andfontSize:(CGFloat)fontSize
+{
+    NSMutableAttributedString *attributedString = [self.attributedText mutableCopy];
+    
+    [attributedString beginEditing];
+    [attributedString enumerateAttributesInRange:NSMakeRange(0, self.text.length)
+                                         options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
+                                      usingBlock:^(NSDictionary *dictionary, NSRange range, BOOL *stop){
+                                          
+                                          UIFont *newFont = [self fontwithBoldTrait:nil
+                                                                        italicTrait:nil
+                                                                           fontName:fontName
+                                                                           fontSize:@(fontSize)
+                                                                     fromDictionary:dictionary];
+                                          
+                                          if (newFont)
+                                              [attributedString addAttributes:[NSDictionary dictionaryWithObject:newFont forKey:NSFontAttributeName] range:range];
+                                      }];
+    [attributedString endEditing];
+    self.attributedText = attributedString;
+}
+
 #pragma mark - DEFAULT GOOGLE DRIVE FONTS
 
 - (void)setDefaultGoogleDriveFonts{
@@ -939,6 +978,36 @@
     _googleDriveFonts = [fonts sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
         return [obj1 compare:obj2];
     }];
+}
+
+#pragma mark - HELPERS
+
+- (void)setupPlaceHolder{
+    self.lblPlaceHolder = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, CGRectGetWidth(self.frame), 40)];
+    self.lblPlaceHolder.text = ([NSString isEmpty:self.placeHolderString] ? @"Text goes here..." : self.placeHolderString);
+    self.lblPlaceHolder.font = self.font;
+    [self setPlaceHolderTextColor:nil];
+    [self updateLabelPlaceHolderState];
+    [self addSubview:self.lblPlaceHolder];
+}
+
+- (void)setPlaceHolderTextColor:(UIColor *)placeHolderTextColor{
+    _placeHolderTextColor = placeHolderTextColor;
+    [self.lblPlaceHolder setTextColor:(placeHolderTextColor != nil ? placeHolderTextColor : DEFAULT_PLACEHOLDER_COLOR)];
+}
+
+- (void)updateLabelPlaceHolderState{
+    self.lblPlaceHolder.hidden = [self canHidePlaceHolder];
+}
+
+- (void)setPlaceHolderString:(NSString *)placeHolderString{
+    _placeHolderString = placeHolderString;
+    
+    self.lblPlaceHolder.text = ([NSString isEmpty:self.placeHolderString] ? @"Text goes here..." : self.placeHolderString);
+}
+
+- (BOOL)canHidePlaceHolder{
+    return self.text.length > 0;
 }
 
 @end
