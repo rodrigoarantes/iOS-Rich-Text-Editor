@@ -508,6 +508,10 @@
     [self updateUndoAndRedoState];
 }
 
+- (void)richTextEditorToolbarDidSelectHyperlink{
+    [self.richTextDelegate didTouchHyperlinkButton:self];
+}
+
 #pragma mark - TEXT VIEW DELEGATE
 
 /**

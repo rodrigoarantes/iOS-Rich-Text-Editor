@@ -61,6 +61,7 @@
 @property (nonatomic, strong) UIButton *btnTextAttachment;
 @property (nonatomic, strong, readwrite) UIButton *btnUndo;
 @property (nonatomic, strong, readwrite) UIButton *btnRedo;
+@property (nonatomic, strong) UIButton *btnHyperlink;
 @end
 
 @implementation RichTextEditorToolbar
@@ -326,6 +327,11 @@
 	[self.delegate richTextEditorToolbarDidSelectRedo];
 }
 
+// Hyperlink
+- (void)hyperlinkSelected:(UIButton *)sender{
+    [self.delegate richTextEditorToolbarDidSelectHyperlink];
+}
+
 #pragma mark - Private Methods -
 
 - (void)populateToolbar
@@ -510,6 +516,12 @@
 		lastAddedView = self.btnBulletList;
 	}
     
+    //////// Hyperlink
+    if (features & RichTextEditorFeatureHyperlink || features & RichTextEditorFeatureAll){
+		[self addView:self.btnHyperlink afterView:lastAddedView withSpacing:YES];
+		lastAddedView = self.btnHyperlink;
+	}
+    
     //////// SEPARATOR ADD UNDO AND REDO
     
     if (features & RichTextEditorFeatureUndoAndRedo || features & RichTextEditorFeatureAll)
@@ -597,6 +609,9 @@
     self.btnUndo = [self normalButtonWithImageNamed:@"undo.png" andSelector:@selector(undoSelected:)];
     
     self.btnRedo = [self normalButtonWithImageNamed:@"redo.png" andSelector:@selector(redoSelected:)];
+
+    self.btnHyperlink = [self normalButtonWithImageNamed:@"linkType" andSelector:@selector(hyperlinkSelected:)];
+    [self.btnHyperlink setImageEdgeInsets: UIEdgeInsetsMake(4, 8, 4, 8)];
 }
 
 - (RichTextEditorToggleButton *)buttonWithImageNamed:(NSString *)image width:(NSInteger)width andSelector:(SEL)selector
