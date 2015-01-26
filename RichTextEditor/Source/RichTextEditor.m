@@ -165,12 +165,12 @@
 	if (action == @selector(selectParagraph:) && self.selectedRange.length > 0)
 		return YES;
 	
-    if (features == RichTextEditorFeatureNone) {
-        if (action == @selector(copy:) || action == @selector(_define:)) {
-            return YES;
-        } else {
-            return NO;
-        }
+    if ((action == @selector(richTextEditorToolbarDidSelectBold) ||
+         action == @selector(richTextEditorToolbarDidSelectItalic) ||
+         action == @selector(richTextEditorToolbarDidSelectUnderline) ||
+         action == @selector(richTextEditorToolbarDidSelectStrikeThrough)) &&
+         features == RichTextEditorFeatureNone) {
+        return NO;
     }
     
 	return [super canPerformAction:action withSender:sender];
