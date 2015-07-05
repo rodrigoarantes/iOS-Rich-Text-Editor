@@ -106,6 +106,10 @@
 													  [self applyBulletListIfApplicable];
 													  [self deleteBulletListWhenApplicable];
 												  }];
+    
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        self.layoutManager.allowsNonContiguousLayout = NO;
+    }
 }
 
 #pragma mark - Override Methods -
