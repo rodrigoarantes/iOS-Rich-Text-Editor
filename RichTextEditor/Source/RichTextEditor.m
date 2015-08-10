@@ -987,12 +987,13 @@
 #pragma mark - HELPERS
 
 - (void)setupPlaceHolder{
-    self.lblPlaceHolder = [[UILabel alloc] initWithFrame:CGRectMake(3, 0, CGRectGetWidth(self.frame), 40)];
+    self.lblPlaceHolder = [[UILabel alloc] initWithFrame:CGRectZero];
     self.lblPlaceHolder.text = ([NSString isEmpty:self.placeHolderString] ? @"Text goes here..." : self.placeHolderString);
     self.lblPlaceHolder.font = self.font;
     [self setPlaceHolderTextColor:nil];
     [self updateLabelPlaceHolderState];
-    [self addSubview:self.lblPlaceHolder];
+    [self.textInputView addSubview:self.lblPlaceHolder];
+    [[[[[[AutoLayoutBuilder pinView:self.lblPlaceHolder] toLeadingWithAmount:5.f] toTrailingWithAmount:4.f] toTop] toBottom] install];
 }
 
 - (void)setPlaceHolderTextColor:(UIColor *)placeHolderTextColor{
