@@ -274,13 +274,15 @@
 
 - (void)richTextEditorToolbarDidSelectBold
 {
-	UIFont *font = [self fontAtIndex:self.selectedRange.location];
+//	UIFont *font = [self fontAtIndex:self.selectedRange.location];
+    UIFont *font = [[self typingAttributes] objectForKey:NSFontAttributeName];
 	[self applyFontAttributesToSelectedRangeWithBoldTrait:[NSNumber numberWithBool:![font isBold]] italicTrait:nil fontName:nil fontSize:nil];
 }
 
 - (void)richTextEditorToolbarDidSelectItalic
 {
-	UIFont *font = [self fontAtIndex:self.selectedRange.location];
+//	UIFont *font = [self fontAtIndex:self.selectedRange.location];
+    UIFont *font = [[self typingAttributes] objectForKey:NSFontAttributeName];
 	[self applyFontAttributesToSelectedRangeWithBoldTrait:nil italicTrait:[NSNumber numberWithBool:![font isItalic]] fontName:nil fontSize:nil];
 }
 
@@ -312,8 +314,9 @@
 
 - (void)richTextEditorToolbarDidSelectUnderline
 {
-	NSDictionary *dictionary = [self dictionaryAtIndex:self.selectedRange.location];
-	NSNumber *existingUnderlineStyle = [dictionary objectForKey:NSUnderlineStyleAttributeName];
+//	NSDictionary *dictionary = [self dictionaryAtIndex:self.selectedRange.location];
+//	NSNumber *existingUnderlineStyle = [dictionary objectForKey:NSUnderlineStyleAttributeName];
+    NSNumber *existingUnderlineStyle = [self.typingAttributes objectForKey:NSUnderlineStyleAttributeName];
 	
 	if (!existingUnderlineStyle || existingUnderlineStyle.intValue == NSUnderlineStyleNone)
 		existingUnderlineStyle = [NSNumber numberWithInteger:NSUnderlineStyleSingle];
@@ -325,8 +328,9 @@
 
 - (void)richTextEditorToolbarDidSelectStrikeThrough
 {
-	NSDictionary *dictionary = [self dictionaryAtIndex:self.selectedRange.location];
-	NSNumber *existingUnderlineStyle = [dictionary objectForKey:NSStrikethroughStyleAttributeName];
+//	NSDictionary *dictionary = [self dictionaryAtIndex:self.selectedRange.location];
+//	NSNumber *existingUnderlineStyle = [dictionary objectForKey:NSStrikethroughStyleAttributeName];
+    NSNumber *existingUnderlineStyle = [self.typingAttributes objectForKey:NSStrikethroughStyleAttributeName];
 	
 	if (!existingUnderlineStyle || existingUnderlineStyle.intValue == NSUnderlineStyleNone)
 		existingUnderlineStyle = [NSNumber numberWithInteger:NSUnderlineStyleSingle];
