@@ -233,10 +233,21 @@
 
 	NSError *error ;
 	NSData *data = [htmlString dataUsingEncoding:NSUTF8StringEncoding];
-	NSAttributedString *str = [[NSAttributedString alloc] initWithData:data
-                                                        options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType,
-                                                             NSCharacterEncodingDocumentAttribute : [NSNumber numberWithInt:NSUTF8StringEncoding]}
-													documentAttributes:nil error:&error];
+    NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithData:data
+                                                                             options:@{NSDocumentTypeDocumentAttribute : NSHTMLTextDocumentType,
+                                                                                       NSCharacterEncodingDocumentAttribute : [NSNumber numberWithInt:NSUTF8StringEncoding]}
+                                                                  documentAttributes:nil error:&error];
+    
+    NSRange rang = (NSRange){0,[str length]};
+    __block NSDictionary<NSString *, id> *currentAttributes;
+    [str enumerateAttributesInRange:rang options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired usingBlock:^(NSDictionary<NSString *, id> *attributes, NSRange range, BOOL *stop) {
+        
+        if (rang.length == (range.length + range.location)) {
+            [str addAttributes:currentAttributes range:range];
+        }
+        
+        currentAttributes = attributes;
+    }];
 	
 	if (error)
 		NSLog(@"%@", error);
