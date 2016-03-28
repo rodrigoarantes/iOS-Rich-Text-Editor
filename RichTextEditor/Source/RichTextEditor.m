@@ -242,7 +242,7 @@
     __block NSDictionary<NSString *, id> *currentAttributes;
     [str enumerateAttributesInRange:rang options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired usingBlock:^(NSDictionary<NSString *, id> *attributes, NSRange range, BOOL *stop) {
         
-        if (rang.length == (range.length + range.location)) {
+        if (rang.length == (range.length + range.location) && currentAttributes) {
             [str addAttributes:currentAttributes range:range];
         }
         
