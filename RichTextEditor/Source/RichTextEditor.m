@@ -531,6 +531,18 @@
     [self.richTextDelegate didTouchHyperlinkButton:self];
 }
 
+- (void)richTextEditorToolbarDidSelectSuperscript {
+    UIFont *font = [self.typingAttributes objectForKey:NSFontAttributeName];
+    NSNumber *existingBaselineOffset = [NSNumber numberWithFloat:font.pointSize / 2];
+    
+    if ([self.toolBar isSuperscriptBtnOn]) {
+        existingBaselineOffset = [NSNumber numberWithFloat:0];
+    }
+    
+    [self applyAttrubutesToSelectedRange:existingBaselineOffset forKey:NSBaselineOffsetAttributeName];
+    [self applyAttrubutesToSelectedRange:existingBaselineOffset != 0? @(0) : @(1) forKey:(NSString*)kCTSuperscriptAttributeName];
+}
+
 #pragma mark - TEXT VIEW DELEGATE
 
 /**
@@ -977,10 +989,13 @@
                                          options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired
                                       usingBlock:^(NSDictionary *dictionary, NSRange range, BOOL *stop){
                                           
+                                          BOOL hasSuperscript = [[dictionary objectForKey:NSBaselineOffsetAttributeName] floatValue] != 0 || [[dictionary objectForKey:@"NSSuperScript"] integerValue] != 0;
+                                          __block CGFloat newSize = hasSuperscript ? (fontSize / 3 * 2) : fontSize;
+                                          
                                           UIFont *newFont = [self fontwithBoldTrait:nil
                                                                         italicTrait:nil
                                                                            fontName:fontName
-                                                                           fontSize:@(fontSize)
+                                                                           fontSize:@(newSize)
                                                                      fromDictionary:dictionary];
                                           
                                           if (newFont)

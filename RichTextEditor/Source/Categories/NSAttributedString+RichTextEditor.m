@@ -137,6 +137,7 @@
                                       NSNumber *strikeThrough = [dictionary objectForKey:NSStrikethroughStyleAttributeName];
                                       BOOL hasStrikeThrough = (!strikeThrough || strikeThrough.intValue == NSUnderlineStyleNone) ? NO :YES;
                                       NSURL *link = [dictionary objectForKey:NSLinkAttributeName];                                     
+                                      BOOL hasSuperscript = [[dictionary objectForKey:NSBaselineOffsetAttributeName] floatValue] != 0 || [[dictionary objectForKey:@"NSSuperScript"] integerValue] != 0;
                                       
                                       [fontString appendFormat:@"<font "];
                                       [fontString appendFormat:@"face=\"%@\" ", font.familyName];
@@ -200,6 +201,10 @@
                                           [fontString insertString:@"</strike>" atIndex:fontString.length];
                                       }
                                       
+                                      if (hasSuperscript) {
+                                          [fontString insertString:@"<sup>" atIndex:0];
+                                          [fontString insertString:@"</sup>" atIndex:fontString.length];
+                                      }
                                       
                                       [htmlString appendString:fontString];
                                   }];

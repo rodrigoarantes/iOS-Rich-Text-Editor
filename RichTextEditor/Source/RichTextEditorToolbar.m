@@ -62,6 +62,7 @@
 @property (nonatomic, strong, readwrite) UIButton *btnUndo;
 @property (nonatomic, strong, readwrite) UIButton *btnRedo;
 @property (nonatomic, strong) UIButton *btnHyperlink;
+@property (nonatomic, strong) RichTextEditorToggleButton *btnSuperscript;
 @end
 
 @implementation RichTextEditorToolbar
@@ -140,6 +141,9 @@
 	NSNumber *existingStrikeThrough = [attributes objectForKey:NSStrikethroughStyleAttributeName];
 	self.btnStrikeThrough.on = (!existingStrikeThrough || existingStrikeThrough.intValue == NSUnderlineStyleNone) ? NO :YES;
 	
+    BOOL hasSuperscript = [[attributes objectForKey:NSBaselineOffsetAttributeName] floatValue] != 0 || [[attributes objectForKey:@"NSSuperScript"] integerValue] != 0;
+    self.btnSuperscript.on = hasSuperscript;
+    
 	[self populateToolbar];
 
 }
@@ -332,6 +336,11 @@
     [self.delegate richTextEditorToolbarDidSelectHyperlink];
 }
 
+// Superscript
+- (void)superscriptSelected:(UIButton *)sender {
+    [self.delegate richTextEditorToolbarDidSelectSuperscript];
+}
+
 #pragma mark - Private Methods -
 
 - (void)populateToolbar
@@ -405,6 +414,12 @@
 		[self addView:self.btnStrikeThrough afterView:lastAddedView withSpacing:YES];
 		lastAddedView = self.btnStrikeThrough;
 	}
+    
+    // Superscript
+    if (features & RichTextEditorFeatureSuperscript || features & RichTextEditorFeatureAll) {
+        [self addView:self.btnSuperscript afterView:lastAddedView withSpacing:YES];
+        lastAddedView = self.btnSuperscript;
+    }
 	
 	// Separator view after font properties.
 	if (features & RichTextEditorFeatureBold || features & RichTextEditorFeatureItalic || features & RichTextEditorFeatureUnderline || features & RichTextEditorFeatureStrikeThrough || features & RichTextEditorFeatureAll)
@@ -612,6 +627,8 @@
 
     self.btnHyperlink = [self normalButtonWithImageNamed:@"linkType" andSelector:@selector(hyperlinkSelected:)];
     [self.btnHyperlink setImageEdgeInsets: UIEdgeInsetsMake(4, 8, 4, 8)];
+    
+    self.btnSuperscript = [self buttonWithImageNamed:@"superscript.png" andSelector:@selector(superscriptSelected:)];
 }
 
 - (RichTextEditorToggleButton *)buttonWithImageNamed:(NSString *)image width:(NSInteger)width andSelector:(SEL)selector
@@ -833,6 +850,10 @@
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
 	[self.popover dismissPopoverAnimated:YES];
+}
+
+- (BOOL)isSuperscriptBtnOn {
+    return self.btnSuperscript.on;
 }
 
 @end

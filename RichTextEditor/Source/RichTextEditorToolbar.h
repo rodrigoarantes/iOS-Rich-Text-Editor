@@ -60,6 +60,7 @@ typedef enum{
     RichTextEditorFeatureUndoAndRedo					= 1 << 16,
 	RichTextEditorFeatureAll							= 1 << 17,
     RichTextEditorFeatureHyperlink                      = 1 << 18,
+    RichTextEditorFeatureSuperscript                    = 1 << 19,
 }RichTextEditorFeature;
 
 @protocol RichTextEditorToolbarDelegate <UIScrollViewDelegate>
@@ -79,6 +80,7 @@ typedef enum{
 - (void)richTextEditorToolbarDidSelectUndo;
 - (void)richTextEditorToolbarDidSelectRedo;
 - (void)richTextEditorToolbarDidSelectHyperlink;
+- (void)richTextEditorToolbarDidSelectSuperscript;
 @end
 
 @protocol RichTextEditorToolbarDataSource <NSObject>
@@ -103,5 +105,7 @@ typedef enum{
 // public buttons
 @property (nonatomic, strong, readonly) UIButton *btnUndo;
 @property (nonatomic, strong, readonly) UIButton *btnRedo;
+
+- (BOOL)isSuperscriptBtnOn;
 
 @end
